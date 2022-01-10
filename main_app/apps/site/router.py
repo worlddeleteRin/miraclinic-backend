@@ -69,7 +69,7 @@ def get_main_slider():
 def get_staff_members():
     return get_staff_members_db()
 
-@router.get("/request-call")
+@router.post("/request-call")
 def request_call(
     call_info: RequestCall,
     background_tasks: BackgroundTasks,
@@ -83,7 +83,8 @@ def request_call(
         subject="Miraclinic. Запрос на обратный звонок",
         background_tasks=background_tasks,    
         # email_to="worlddelete0@yandex.ru",
-        email_to="fast.code.main@gmail.com",
+        # email_to="fast.code.main@gmail.com",
+        email_to="e.gusea@gmail.com",
         body=message_body,
     )
     return {
