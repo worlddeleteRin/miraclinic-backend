@@ -20,6 +20,7 @@ class DbProvider(BaseModel):
     staff_members_db: Collection
     services_db: Collection
     categories_db: Collection
+    sliders_db: Collection
 
     class Config:
         arbitrary_types_allowed = True
@@ -39,6 +40,7 @@ def setup_db_main() -> DbProvider:
                 staff_members_db = db_main["staff_members"],
                 services_db = db_main["services"],
                 categories_db = db_main["categories"],
+                sliders_db = db_main["sliders"],
             )
     return db_provider
 

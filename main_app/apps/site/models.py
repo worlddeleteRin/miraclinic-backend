@@ -39,3 +39,7 @@ class StaffMember(BaseModel):
 class RequestCall(BaseModel):
     name: str
     phone: str
+
+class Slider(BaseModel):
+    imgsrc: str
+    display_order: int = 0
