@@ -1,0 +1,64 @@
+- name: Deploy Rollsberi backend
+  hosts: root@194.67.116.154
+  become: yes
+  vars:
+    server_name: api.miraclinic.site
+    document_root: /home/sites/miraclinic/miraclinic_backend
+    env_root: env
+    app_root: main_app
+    app_name: miraclinic-backend
+    owner_name: rin
+    owner_group: www-data
+
+  tasks:
+    - name: Copy project files to the server document_root dest
+      synchronize:
+        src: "../{{app_root}}"
+        dest: "{{document_root}}"
+    - name: Copy requirements file to the server document_root dest
+      synchronize:
+        src: "../requirements.txt"
+        dest: "{{document_root}}"
+
+    - name: Create env
+      command: virtualenv {{ document_root }}/{{ env_root }}
+    - name: Install requirements into created env
+      pip:
+        requirements: "{{ document_root }}/requirements.txt"
+        virtualenv: "{{ document_root }}/{{ env_root }}"
+
+    - name: Set ownership for repo
+      command: chown -R {{ owner_name }}:{{ owner_group }} {{ document_root }}
+
+    - name: Apply Nginx template 
+      template:
+        src: nginx.conf.j2
+        dest: "/etc/nginx/sites-available/{{app_name}}"
+      when: 2 > 1
+      notify: Restart Nginx
+    - name: Enable Nginx app
+      file:
+        src: "/etc/nginx/sites-available/{{app_name}}"
+        dest: "/etc/nginx/sites-enabled/{{app_name}}"
+        state: link
+      notify: Restart Nginx
+
+    - name: Apply app service template
+      template:
+        src: app.service.j2
+        dest: "/etc/systemd/system/{{app_name}}.service"
+    - name: Start app service
+      ansible.builtin.systemd:
+        state: started
+        name: "{{ app_name }}"
+    - name: Restart app service
+      ansible.builtin.systemd:
+        state: restarted
+        name: "{{ app_name }}"
+
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

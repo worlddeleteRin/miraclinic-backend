@@ -1,0 +1,12 @@
+*.swp
+secure.py
+**/__pycache__
+.env
+**/.env
+test
+.test
+pyrightconfig.json
+**/static/
+.env.prod
+.env.dev
+.DS_Store
