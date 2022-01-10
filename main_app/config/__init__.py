@@ -13,7 +13,11 @@ class Settings(BaseSettings):
     DEBUG_MODE: bool = True
     # base static url
     base_static_url: str = ""
-
+    mail_username: str = ""
+    mail_password: str = ""
+    mail_from: str = ""
+    mail_port: int = 587
+    mail_server: str = ""
 
 
     class Config:

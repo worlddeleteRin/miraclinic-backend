@@ -1,11 +1,14 @@
 from fastapi import APIRouter
+from fastapi.background import BackgroundTasks
 
 from config import settings
 
 from database.main_db import db_provider
 
 from apps.site.content import header_links, main_slider
+from apps.notifications.mail import send_mail_background
 from .methods import get_stocks_db, get_staff_members_db
+from .models import RequestCall
 
 router = APIRouter(
     prefix = "/site",
@@ -65,4 +68,25 @@ def get_main_slider():
 @router.get("/staff-members")
 def get_staff_members():
     return get_staff_members_db()
+
+@router.get("/request-call")
+def request_call(
+    call_info: RequestCall,
+    background_tasks: BackgroundTasks,
+):
+    print(f"call info is {call_info.dict()}")
+    message_body = {
+        "phone": call_info.phone,
+        "name": call_info.name,
+    }
+    send_mail_background(
+        subject="Miraclinic. Запрос на обратный звонок",
+        background_tasks=background_tasks,    
+        # email_to="worlddelete0@yandex.ru",
+        email_to="fast.code.main@gmail.com",
+        body=message_body,
+    )
+    return {
+        "status": "success"
+    }
 

@@ -36,3 +36,6 @@ class StaffMember(BaseModel):
     imgsrc: List[str] = []
     working_yeasrs: str = ""
 
+class RequestCall(BaseModel):
+    name: str
+    phone: str
